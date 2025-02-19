@@ -6,15 +6,15 @@
     <title>Calculator</title>
     <style>
         :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #2196F3;
-            --background-color: #333;
-            --text-color: white;
-            --border-color: blue;
+            --primary-color: #81C784; /* Lighter Green */
+            --secondary-color: #64B5F6; /* Lighter Blue */
+            --background-color: #EEEEEE; /* Light Gray */
+            --text-color: #333; /* Dark Gray for better contrast */
+            --border-color: #BDBDBD; /* Light Gray border */
         }
 
         body {
-            background-color: black;
+            background-color: #F5F5F5; /* Even Lighter Gray */
             font-family: sans-serif;
             display: flex;
             justify-content: center;
@@ -29,7 +29,7 @@
             padding: 20px;
             border-radius: 10px;
             border: 2px solid var(--border-color);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Softer shadow */
         }
 
         .calculator {
@@ -42,17 +42,18 @@
             grid-column: 1 / -1;
             padding: 10px;
             font-size: 20px;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd; /* Lighter border */
             text-align: right;
             margin-bottom: 10px;
-            background-color: #f0f0f0;
+            background-color: #FFFFFF; /* White display */
             border-radius: 5px;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            color: var(--text-color); /* Text color from CSS variable */
         }
 
         .calculator-display:hover {
-            background-color: #e0e0e0;
-            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            background-color: #FAFAFA; /* Slightly darker white on hover */
+            box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.1);
         }
 
         .calculator button {
@@ -62,35 +63,43 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            background-image: linear-gradient(to bottom right, var(--primary-color), #388E3C);
+            background-image: linear-gradient(to bottom right, var(--primary-color), #689F38); /* Lighter green gradient */
             color: var(--text-color);
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Softer shadow */
             transition: background-image 0.3s ease, box-shadow 0.3s ease;
         }
 
         .calculator button:hover {
-            background-image: linear-gradient(to bottom right, #388E3C, var(--primary-color));
-            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
+            background-image: linear-gradient(to bottom right, #689F38, var(--primary-color));
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         .calculator button.operator {
-            background-image: linear-gradient(to bottom right, var(--secondary-color), #1976D2);
+            background-image: linear-gradient(to bottom right, var(--secondary-color), #4285F4); /* Lighter blue gradient */
         }
 
         .calculator button.operator:hover {
-            background-image: linear-gradient(to bottom right, #1976D2, var(--secondary-color));
+            background-image: linear-gradient(to bottom right, #4285F4, var(--secondary-color));
         }
 
         .calculator button.clear, .calculator button.clear-entry {
-            background-image: linear-gradient(to bottom right, #f44336, #d32f2f);
+            background-image: linear-gradient(to bottom right, #EF5350, #E53935); /* Lighter red gradient */
         }
 
         .calculator button.clear:hover, .calculator button.clear-entry:hover {
-            background-image: linear-gradient(to bottom right, #d32f2f, #f44336);
+            background-image: linear-gradient(to bottom right, #E53935, #EF5350);
         }
 
         .calculator button.equals {
             grid-column: span 2;
+        }
+
+        .calculator button.memory {
+            background-image: linear-gradient(to bottom right, #FF9800, #F57C00); /* Orange */
+        }
+
+        .calculator button.memory:hover {
+            background-image: linear-gradient(to bottom right, #F57C00, #FF9800);
         }
     </style>
 </head>
@@ -103,26 +112,65 @@
         <button>8</button>
         <button>9</button>
         <button class="operator">/</button>
+        <button class="memory" id="mPlus">M+</button>
         <button>4</button>
         <button>5</button>
         <button>6</button>
         <button class="operator">*</button>
+        <button class="memory" id="mMinus">M-</button>
         <button>1</button>
         <button>2</button>
         <button>3</button>
         <button class="operator">-</button>
+        <button class="memory" id="mRecall">MR</button>
         <button>0</button>
         <button>.</button>
         <button class="equals">=</button>
         <button class="operator">+</button>
         <button class="clear">C</button>
         <button class="clear-entry">CE</button>
+        <button class="memory" id="mClear">MC</button>
     </div>
 </div>
 
 <script>
     const display = document.getElementById('display');
     const buttons = document.querySelectorAll('.calculator button');
+    const mPlusButton = document.getElementById('mPlus');
+    const mMinusButton = document.getElementById('mMinus');
+    const mRecallButton = document.getElementById('mRecall');
+    const mClearButton = document.getElementById('mClear');
+
+    let memoryValue = 0;
+
+    mPlusButton.addEventListener('click', () => {
+        try {
+            memoryValue += parseFloat(display.value) || 0;
+            display.value = '';
+        } catch (error) {
+            display.value = 'Error';
+            console.error("Memory Error:", error);
+        }
+    });
+
+    mMinusButton.addEventListener('click', () => {
+        try {
+            memoryValue -= parseFloat(display.value) || 0;
+            display.value = '';
+        } catch (error) {
+            display.value = 'Error';
+            console.error("Memory Error:", error);
+        }
+    });
+
+    mRecallButton.addEventListener('click', () => {
+        display.value = memoryValue;
+    });
+
+    mClearButton.addEventListener('click', () => {
+        memoryValue = 0;
+    });
+
 
     buttons.forEach(button => {
         button.addEventListener('click', () => {
@@ -162,6 +210,7 @@
             } catch (error) {
                 display.value = 'Error';
             }
+            event.preventDefault(); // Prevent form submission
         } else if (key === 'Backspace') {
             display.value = display.value.slice(0, -1);
         } else if (key === 'Escape') {
@@ -169,12 +218,4 @@
         }
     });
 
-    document.addEventListener('keydown', function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-        }
-    });
 </script>
-
-</body>
-</html>
